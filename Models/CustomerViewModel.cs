@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace TracersCafe.Models
 {
-    public class CustomerModel
+    public class CustomerViewModel
     {
         //Id of customer
         public int Id { get; set; }
         //Title of customer
         [Required]
         public string Title { get; set; }
+        public List<SelectListItem> TitleList { get; set; }
         //First name of customer
         [Required]
         public string Firstname { get; set; }
