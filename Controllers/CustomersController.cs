@@ -41,7 +41,7 @@ namespace TracersCafe.Controllers
         {
             //Create a new ViewModel and return this ViewModel for
             //users to enter details into form
-            CustomerViewModel customerViewModel = new CustomerViewModel()
+            CustomerModel customerModel = new CustomerModel()
             {
                 //Initialise dropdown list object for use in the ViewModel
                 //i.e. users will be able to see a drop down list on 
@@ -54,19 +54,19 @@ namespace TracersCafe.Controllers
                     new SelectListItem() { Text = "Mrs", Value = "Mrs" }
                 }
             };
-            return View(customerViewModel);
+            return View(customerModel);
         }
 
         //POST: Save New Customer Details To Database
         [HttpPost]
-        public async Task<ActionResult> Store(CustomerViewModel customerViewModel)
+        public async Task<ActionResult> Store(CustomerModel customerModel)
         {
             //If there are any errors (according to the valdiation rules set in CustomerModel.cs
             //Then redirect user to a new customerViewModel with the appropriate validation messages on it
             //E.g. Firstname field is required
             if (!ModelState.IsValid)
             {
-                CustomerViewModel newCustomerViewModel = new CustomerViewModel()
+                CustomerModel newCustomerModel = new CustomerModel()
                 {
                     TitleList = new List<SelectListItem>()
                     {
@@ -76,38 +76,38 @@ namespace TracersCafe.Controllers
                         new SelectListItem() { Text = "Mrs", Value = "Mrs" }
                     }
                 };
-                return View("Create", newCustomerViewModel);
+                return View("Create", newCustomerModel);
             }
             //Save to database
-            CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == customerViewModel.Id);
+            CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == customerModel.Id);
             //customer already exists in database so just update the details
             if (customer != null)
             {
-                customer.Title = customerViewModel.Title;
-                customer.Firstname = customerViewModel.Firstname;
-                customer.Surname = customerViewModel.Surname;
-                customer.Address1 = customerViewModel.Address1;
-                customer.Address2 = customerViewModel.Address2;
-                customer.Address3 = customerViewModel.Address3;
-                customer.Address4 = customerViewModel.Address4;
-                customer.PostCode = customerViewModel.PostCode;
-                customer.Telephone = customerViewModel.Telephone;
-                customer.Age = customerViewModel.Age;
+                customer.Title = customerModel.Title;
+                customer.Firstname = customerModel.Firstname;
+                customer.Surname = customerModel.Surname;
+                customer.Address1 = customerModel.Address1;
+                customer.Address2 = customerModel.Address2;
+                customer.Address3 = customerModel.Address3;
+                customer.Address4 = customerModel.Address4;
+                customer.PostCode = customerModel.PostCode;
+                customer.Telephone = customerModel.Telephone;
+                customer.Age = customerModel.Age;
             }
             //customer does not exist in database so add a new record
             else
             {
                 context.Customers.Add(new CustomerModel() {
-                    Title = customerViewModel.Title,
-                    Firstname = customerViewModel.Firstname,
-                    Surname = customerViewModel.Surname,
-                    Address1 = customerViewModel.Address1,
-                    Address2 = customerViewModel.Address2,
-                    Address3 = customerViewModel.Address3,
-                    Address4 = customerViewModel.Address4,
-                    PostCode = customerViewModel.PostCode,
-                    Telephone = customerViewModel.Telephone,
-                    Age = customerViewModel.Age
+                    Title = customerModel.Title,
+                    Firstname = customerModel.Firstname,
+                    Surname = customerModel.Surname,
+                    Address1 = customerModel.Address1,
+                    Address2 = customerModel.Address2,
+                    Address3 = customerModel.Address3,
+                    Address4 = customerModel.Address4,
+                    PostCode = customerModel.PostCode,
+                    Telephone = customerModel.Telephone,
+                    Age = customerModel.Age
                 });
             }
             //Save Customer Details asynchronously
@@ -122,7 +122,7 @@ namespace TracersCafe.Controllers
             //Get the customer model belonging to the selected customer
             CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == id);
             //Set the values of the CustomerViewModel edit form based on values stored in database/CustomerModel in line above 
-            CustomerViewModel customerViewModel = new CustomerViewModel()
+            CustomerModel customerModel = new CustomerModel()
             {
                 Title = customer.Title,
                 TitleList = new List<SelectListItem>()
@@ -147,21 +147,21 @@ namespace TracersCafe.Controllers
             //Set the appropriate drop down list item as selected
             //E.g. when creating form customer might select their title as 'Mr'
             //Therefore, when editing the details of this customer, the Title field should be set to 'Mr' initially
-            customerViewModel.TitleList.Where(c => c.Text == customer.Title).FirstOrDefault().Selected = true;
-            return View(customerViewModel);
+            customerModel.TitleList.Where(c => c.Text == customer.Title).FirstOrDefault().Selected = true;
+            return View(customerModel);
         }
 
         //POST: Save Updated Customer Details To Database
         [HttpPost, ActionName("Update")]
-        public async Task<ActionResult> Update(CustomerViewModel customerViewModel)
+        public async Task<ActionResult> Update(CustomerModel customerModel)
         {
             //if there are any errors according to the CustomerModel validation rules then return the new CustomerViewModel
             //with the appropriate validation messages as set in the CustomerModel
             if (!ModelState.IsValid)
             {
-                CustomerViewModel newCustomerViewModel = new CustomerViewModel()
+                CustomerModel newCustomerModel = new CustomerModel()
                 {
-                    Title = customerViewModel.Title,
+                    Title = customerModel.Title,
                     TitleList = new List<SelectListItem>()
                 {
                     new SelectListItem() { Text = "Mr", Value = "Mr" },
@@ -169,33 +169,33 @@ namespace TracersCafe.Controllers
                     new SelectListItem() { Text = "Ms", Value = "Ms" },
                     new SelectListItem() { Text = "Mrs", Value = "Mrs" }
                 },
-                    Firstname = customerViewModel.Firstname,
-                    Surname = customerViewModel.Surname,
-                    Address1 = customerViewModel.Address1,
-                    Address2 = customerViewModel.Address2,
-                    Address3 = customerViewModel.Address3,
-                    Address4 = customerViewModel.Address4,
-                    PostCode = customerViewModel.PostCode,
-                    Telephone = customerViewModel.Telephone,
-                    Age = customerViewModel.Age,
+                    Firstname = customerModel.Firstname,
+                    Surname = customerModel.Surname,
+                    Address1 = customerModel.Address1,
+                    Address2 = customerModel.Address2,
+                    Address3 = customerModel.Address3,
+                    Address4 = customerModel.Address4,
+                    PostCode = customerModel.PostCode,
+                    Telephone = customerModel.Telephone,
+                    Age = customerModel.Age,
                 };
-                return View("Edit", newCustomerViewModel);
+                return View("Edit", newCustomerModel);
             }
             //Get selected customer
-            CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == customerViewModel.Id);
+            CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == customerModel.Id);
             //customer already exists in database so just update the details
             if (customer != null)
             {
-                customer.Title = customerViewModel.Title;
-                customer.Firstname = customerViewModel.Firstname;
-                customer.Surname = customerViewModel.Surname;
-                customer.Address1 = customerViewModel.Address1;
-                customer.Address2 = customerViewModel.Address2;
-                customer.Address3 = customerViewModel.Address3;
-                customer.Address4 = customerViewModel.Address4;
-                customer.PostCode = customerViewModel.PostCode;
-                customer.Telephone = customerViewModel.Telephone;
-                customer.Age = customerViewModel.Age;
+                customer.Title = customerModel.Title;
+                customer.Firstname = customerModel.Firstname;
+                customer.Surname = customerModel.Surname;
+                customer.Address1 = customerModel.Address1;
+                customer.Address2 = customerModel.Address2;
+                customer.Address3 = customerModel.Address3;
+                customer.Address4 = customerModel.Address4;
+                customer.PostCode = customerModel.PostCode;
+                customer.Telephone = customerModel.Telephone;
+                customer.Age = customerModel.Age;
             }
             //customer does not exist in database so add a new record
             else

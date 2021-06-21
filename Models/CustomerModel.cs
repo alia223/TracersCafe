@@ -40,6 +40,9 @@ namespace TracersCafe.Models
         [Required]
         public string Telephone { get; set; }
         [Required]
+        //Age of Customer
         public int Age { get; set; }
+        [NotMapped]
+        public List<SelectListItem> TitleList { get; set; }
     }
 }
