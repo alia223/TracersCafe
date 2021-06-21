@@ -16,11 +16,13 @@ namespace TracersCafe.Controllers
 
         public CustomersController()
         {
+            //initialise context so that Database can be modified
             context = new ApplicationDbContext();
         }
 
         protected override void Dispose(bool disposing)
         {
+            //Dispose context once finished
             context.Dispose();
         }
 
@@ -28,6 +30,7 @@ namespace TracersCafe.Controllers
         [HttpGet]
         public ActionResult Index()
         {
+            //Get the customers from the customer model and form a list
             List<CustomerModel> customers = context.Customers.ToList();
             return View(customers);
         }
@@ -36,8 +39,13 @@ namespace TracersCafe.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            //Create a new ViewModel and return this ViewModel for
+            //users to enter details into form
             CustomerViewModel customerViewModel = new CustomerViewModel()
             {
+                //Initialise dropdown list object for use in the ViewModel
+                //i.e. users will be able to see a drop down list on 
+                //Create Customer Details Form which will contain these 4 values
                 TitleList = new List<SelectListItem>()
                 {
                     new SelectListItem() { Text = "Mr", Value = "Mr" },
@@ -53,6 +61,9 @@ namespace TracersCafe.Controllers
         [HttpPost]
         public async Task<ActionResult> Store(CustomerViewModel customerViewModel)
         {
+            //If there are any errors (according to the valdiation rules set in CustomerModel.cs
+            //Then redirect user to a new customerViewModel with the appropriate validation messages on it
+            //E.g. Firstname field is required
             if (!ModelState.IsValid)
             {
                 CustomerViewModel newCustomerViewModel = new CustomerViewModel()
@@ -69,7 +80,7 @@ namespace TracersCafe.Controllers
             }
             //Save to database
             CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == customerViewModel.Id);
-            //customer already exists so just update the details
+            //customer already exists in database so just update the details
             if (customer != null)
             {
                 customer.Title = customerViewModel.Title;
@@ -83,6 +94,7 @@ namespace TracersCafe.Controllers
                 customer.Telephone = customerViewModel.Telephone;
                 customer.Age = customerViewModel.Age;
             }
+            //customer does not exist in database so add a new record
             else
             {
                 context.Customers.Add(new CustomerModel() {
@@ -98,7 +110,7 @@ namespace TracersCafe.Controllers
                     Age = customerViewModel.Age
                 });
             }
-            //Save Customer Details
+            //Save Customer Details asynchronously
             await context.SaveChangesAsync();
             return Redirect("/Customers");
         }
@@ -107,7 +119,9 @@ namespace TracersCafe.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
+            //Get the customer model belonging to the selected customer
             CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == id);
+            //Set the values of the CustomerViewModel edit form based on values stored in database/CustomerModel in line above 
             CustomerViewModel customerViewModel = new CustomerViewModel()
             {
                 Title = customer.Title,
@@ -129,6 +143,10 @@ namespace TracersCafe.Controllers
                 Age = customer.Age,
 
             };
+            //Depending on the value stored in the Title field of the database table for this customer
+            //Set the appropriate drop down list item as selected
+            //E.g. when creating form customer might select their title as 'Mr'
+            //Therefore, when editing the details of this customer, the Title field should be set to 'Mr' initially
             customerViewModel.TitleList.Where(c => c.Text == customer.Title).FirstOrDefault().Selected = true;
             return View(customerViewModel);
         }
@@ -137,6 +155,8 @@ namespace TracersCafe.Controllers
         [HttpPost, ActionName("Update")]
         public async Task<ActionResult> Update(CustomerViewModel customerViewModel)
         {
+            //if there are any errors according to the CustomerModel validation rules then return the new CustomerViewModel
+            //with the appropriate validation messages as set in the CustomerModel
             if (!ModelState.IsValid)
             {
                 CustomerViewModel newCustomerViewModel = new CustomerViewModel()
@@ -161,9 +181,9 @@ namespace TracersCafe.Controllers
                 };
                 return View("Edit", newCustomerViewModel);
             }
-            //Save to database
+            //Get selected customer
             CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == customerViewModel.Id);
-            //customer already exists so just update the details
+            //customer already exists in database so just update the details
             if (customer != null)
             {
                 customer.Title = customerViewModel.Title;
@@ -177,6 +197,7 @@ namespace TracersCafe.Controllers
                 customer.Telephone = customerViewModel.Telephone;
                 customer.Age = customerViewModel.Age;
             }
+            //customer does not exist in database so add a new record
             else
             {
                 context.Customers.Add(new CustomerModel() {
@@ -200,8 +221,11 @@ namespace TracersCafe.Controllers
         //DELETE: Delete Customer/Customer Details
         public async Task<ActionResult> Delete(int id)
         {
+            //Get selected customer
             CustomerModel customer = context.Customers.SingleOrDefault(c => c.Id == id);
+            //Delete customer
             context.Entry(customer).State = EntityState.Deleted;
+            //Save change asynchronously
             await context.SaveChangesAsync();
             return Redirect("/Customers");
         }
