@@ -116,7 +116,7 @@ namespace TracersCafe.Controllers
                     new SelectListItem() { Text = "Mr", Value = "Mr" },
                     new SelectListItem() { Text = "Miss", Value = "Miss" },
                     new SelectListItem() { Text = "Ms", Value = "Ms" },
-                    new SelectListItem() { Text = "Mr", Value = "Mrs" }
+                    new SelectListItem() { Text = "Mrs", Value = "Mrs" }
                 },
                 Firstname = customer.Firstname,
                 Surname = customer.Surname,
