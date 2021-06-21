@@ -14,9 +14,9 @@ namespace TracersCafe.Models
         //Title of customer
         [Required]
         public string Title { get; set; }
+        public List<SelectListItem> TitleList { get; set; }
         //First name of customer
         [Required]
-        public List<SelectListItem> TitleList { get; set; }
         public string Firstname { get; set; }
         //Last name of customer
         [Required]
